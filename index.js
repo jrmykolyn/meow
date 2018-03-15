@@ -53,6 +53,20 @@ module.exports = (helpMessage, opts) => {
 
 	normalizePackageData(pkg);
 
+	if (opts.flags) {
+		Object.keys(argv)
+			.filter(key => key !== '_')
+			.forEach(key => {
+				// // Get 'flag' name based on current key.
+				const flag = (Object.keys(opts.flags).includes(key)) ? key : minimistOpts.alias ? minimistOpts.alias[key] : '';
+
+				// If the flag object contains a callback, apply it.
+				if (opts.flags[flag] && typeof opts.flags[flag].callback === 'function') {
+					argv[key] = opts.flags[flag].callback(argv[key]);
+				}
+			});
+	}
+
 	process.title = pkg.bin ? Object.keys(pkg.bin)[0] : pkg.name;
 
 	let description = opts.description;

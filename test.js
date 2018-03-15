@@ -120,3 +120,17 @@ test('accept help and options', t => {
 		f: true
 	});
 });
+
+test('flag values can be mutated', t => {
+	const cli = m({
+		argv: ['foo', '--test-flag', 'Initial value'],
+		flags: {
+			'test-flag': {
+				alias: 'tf',
+				callback: v => v.toUpperCase()
+			}
+		}
+	});
+
+	t.is(cli.flags.testFlag, 'INITIAL VALUE');
+});
